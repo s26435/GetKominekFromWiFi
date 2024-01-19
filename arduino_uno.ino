@@ -1,5 +1,7 @@
 #include <LiquidCrystal.h>
 #define LOOP_DELAY 1000
+#define ENERGY_BUTTON_PIN 8
+
 const int rs = 2, en = 3, d4 = 4, d5 = 5, d6 = 6, d7 = 7;
 LiquidCrystal lcd(rs, en, d4, d5, d6, d7);
 const String headers[3] = {"Temperatura:","Tryb:", "Kolor:"};
@@ -46,12 +48,26 @@ void next(){
 }
 
 void setup() {
+  Serial.begin(9600); // TODELETE
   //ustawianie wymiarów wyświetlacza
   lcd.begin(16, 2);
+  //ustawianie pina do przycisku dodającego energię
+  pinMode(ENERGY_BUTTON_PIN, INPUT);
+  //inicjalizowanie danych
   get_furnace_data();
 }
 
+//TODO
+//funkcja wysyłająca 
+void add_energy_usage(int value){
+  Serial.write("Done\n"); 
+}
+
+
 void loop() {
+  //jeśli nacisnięty guzik to dodaje energie
+  if(digitalRead(ENERGY_BUTTON_PIN)==HIGH) add_energy_usage(100);
+  else  Serial.write("Not Done\n"); //TODELETE
   next();
   delay(2000);
   show(headers[show_count], data[show_count]);
